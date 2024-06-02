@@ -1,4 +1,4 @@
-import hashlib #hashlib 사용
+import hashlib  # hashlib 사용
 import os
 import json
 from datetime import datetime, date
@@ -8,8 +8,10 @@ import random
 import webbrowser
 import re
 import Add_function
+from tkinter import *
 
-userdata = {} #아이디, 비밀번호 저장해둘 딕셔너리
+userdata = {}  # 아이디, 비밀번호 저장해둘 딕셔너리
+
 
 def user_reg():  # 회원가입
     id = input("id 입력: ")
@@ -30,15 +32,18 @@ def user_reg():  # 회원가입
 
         userdata[id] = pw_data
 
-        with open('login.txt', 'a', encoding='UTF-8') as fw: #utf-8 변환 후 login.txt에 작성
-            for user_id, user_pw in userdata.items(): #딕셔너리 내에 있는 값을 모두 for문
-                fw.write(f'{user_id} : {user_pw}\n') #key, value값을 차례로 login.txt파일에 저장
+        with open('login.txt', 'a', encoding='UTF-8') as fw:  # utf-8 변환 후 login.txt에 작성
+            for user_id, user_pw in userdata.items():  # 딕셔너리 내에 있는 값을 모두 for문
+                # key, value값을 차례로 login.txt파일에 저장
+                fw.write(f'{user_id} : {user_pw}\n')
         print("회원가입이 완료되었습니다!")
         break
+
 
 class User:    # 사용자 정보 저장 (이름)
     def __init__(self, name):
         self.name = name
+
 
 # 아이디, 비밀번호, 이름, 전화번호를 저장해둘 딕셔너리
 userdata2 = {}
@@ -46,6 +51,7 @@ userdata2 = {}
 usernames = {}
 # 전화번호와 아이디를 매핑하기 위한 딕셔너리
 userphones = {}
+
 
 def user_reg_include_name_phone():  # 이름과 전화번호 정보를 포함한 회원가입
     id = input("id 입력: ")  # 회원가입 시의 id 입력
@@ -58,10 +64,10 @@ def user_reg_include_name_phone():  # 이름과 전화번호 정보를 포함한
         print("이미 등록된 전화번호입니다. 다른 전화번호를 입력해주세요.")
         print("( 만약 입력한 전화번호로 등록된 id를 찾고 싶은 경우 ?를 입력하시오 )")
         phone = input("전화번호 입력: ")
-        if phone == '?' : # 전화번호로 등록된 id를 찾고 싶은 경우
+        if phone == '?':  # 전화번호로 등록된 id를 찾고 싶은 경우
             find_id_by_phone()
             print("로그인 기능으로 다시 돌아갑니다.")
-            return #로그인 기능으로 다시 돌려줌
+            return  # 로그인 기능으로 다시 돌려줌
 
     pw = input("password 입력: ")  # 회원가입 시의 pw 입력
 
@@ -69,28 +75,37 @@ def user_reg_include_name_phone():  # 이름과 전화번호 정보를 포함한
     h.update(pw.encode())  # sha256으로 암호화
     pw_data = h.hexdigest()  # 16진수로 변환
 
-    userdata2[id] = {'pw': pw_data, 'name': name, 'phone': phone}  # key에 id값을, value에 비밀번호와 이름, 전화번호 값
+    # key에 id값을, value에 비밀번호와 이름, 전화번호 값
+    userdata2[id] = {'pw': pw_data, 'name': name, 'phone': phone}
     usernames[name] = id  # 이름과 아이디 매핑
     userphones[phone] = id  # 전화번호와 아이디 매핑
 
     with open('login.txt', 'w', encoding='UTF-8') as fw:  # utf-8 변환 후 login.txt에 작성
         for user_id, user_info in userdata2.items():  # 딕셔너리 내에 있는 값을 모두 for문
-            fw.write(f'{user_id} : {user_info["pw"]} : {user_info["name"]} : {user_info["phone"]}\n')  # 아이디, 비밀번호, 이름, 전화번호 값을 차례로 login.txt파일에 저장
+            # 아이디, 비밀번호, 이름, 전화번호 값을 차례로 login.txt파일에 저장
+            fw.write(
+                f'{user_id} : {user_info["pw"]} : {user_info["name"]} : {user_info["phone"]}\n')
 
 
 """
 전화번호를 통해 아이디를 찾는 함수
 """
+
+
 def find_id_by_phone():
     phone = input("찾고자 하는 사용자의 전화번호 입력: ")  # 사용자가 찾고자 하는 전화번호를 입력받음
     if phone in userphones:  # 입력받은 전화번호가 userphones 딕셔너리에 존재하는지 확인
-        print(f'해당 전화번호로 등록된 아이디는 {userphones[phone]}입니다.')  # 존재하면 해당 전화번호에 매핑된 아이디를 출력
+        # 존재하면 해당 전화번호에 매핑된 아이디를 출력
+        print(f'해당 전화번호로 등록된 아이디는 {userphones[phone]}입니다.')
     else:
         print("해당 전화번호를 가진 사용자가 없습니다.")  # 존재하지 않으면 사용자 없음 메시지 출력
+
 
 """
 회원 정보를 수정하는 함수
 """
+
+
 def modify_user_info():
     id_to_modify = input("수정할 사용자의 id 입력: ")  # 수정하고자 하는 사용자의 id 입력
 
@@ -125,11 +140,13 @@ def modify_user_info():
     new_pw_data = h.hexdigest()  # 16진수로 변환
 
     # 사용자 정보 수정
-    userdata2[id_to_modify] = {'pw': new_pw_data, 'name': new_name, 'phone': new_phone}
+    userdata2[id_to_modify] = {'pw': new_pw_data,
+                               'name': new_name, 'phone': new_phone}
 
     # 이름과 전화번호 매핑 정보 수정
     # 이전 이름과 전화번호 삭제
-    old_phone = [key for key, value in userphones.items() if value == id_to_modify][0]
+    old_phone = [key for key, value in userphones.items() if value ==
+                 id_to_modify][0]
     del userphones[old_phone]
     # 새로운 이름과 전화번호 매핑
     usernames[new_name] = id_to_modify
@@ -138,9 +155,11 @@ def modify_user_info():
     # 수정된 정보를 파일에 다시 쓰기
     with open('login.txt', 'w', encoding='UTF-8') as fw:
         for user_id, user_info in userdata2.items():
-            fw.write(f'{user_id} : {user_info["pw"]} : {user_info["name"]} : {user_info["phone"]}\n')
+            fw.write(
+                f'{user_id} : {user_info["pw"]} : {user_info["name"]} : {user_info["phone"]}\n')
 
     print("사용자 정보가 성공적으로 수정되었습니다.")
+
 
 class Debt:
     def __init__(self, lender, amount, due_date):
@@ -169,7 +188,9 @@ class Debt:
         """
         return self.payment_history
 
+
 debts = []
+
 
 def validate_date(date_text):
     """
@@ -180,6 +201,7 @@ def validate_date(date_text):
         return True
     except ValueError:
         return False
+
 
 def add_debt():
     """
@@ -200,6 +222,7 @@ def add_debt():
     debts.append(new_debt)
     print("새 빚이 추가되었습니다.")
 
+
 def view_debts():
     """
     등록된 빚 목록을 출력하는 함수. 등록된 빚이 없으면 해당 메시지를 출력.
@@ -207,7 +230,9 @@ def view_debts():
     if not debts:
         print("등록된 빚이 없습니다.")
     for debt in debts:
-        print(f"대출 기관/사람: {debt.lender}, 남은 금액: {debt.amount}, 상환 기한: {debt.due_date}, 상환된 금액: {debt.paid_amount}")
+        print(
+            f"대출 기관/사람: {debt.lender}, 남은 금액: {debt.amount}, 상환 기한: {debt.due_date}, 상환된 금액: {debt.paid_amount}")
+
 
 def pay_debt():
     """
@@ -244,6 +269,7 @@ def pay_debt():
     else:
         print(f"남은 금액: {remaining_amount}")
 
+
 def view_debt_payment_history():
     """
     특정 빚의 상환 내역을 조회하는 함수.
@@ -270,12 +296,14 @@ def view_debt_payment_history():
         for date, amount in payment_history:
             print(f"날짜: {date}, 금액: {amount}")
 
+
 def debt_management():
     """
     빚 관리 기능 함수. 사용자 입력에 따라 빚 추가, 목록 보기, 상환, 상환 내역 조회 기능을 호출.
     """
     while True:
-        debt_func = input("빚 관리 기능 입력 (1: 빚 추가, 2: 빚 목록 보기, 3: 빚 상환, 4: 상환 내역 조회, exit: 종료) : ")
+        debt_func = input(
+            "빚 관리 기능 입력 (1: 빚 추가, 2: 빚 목록 보기, 3: 빚 상환, 4: 상환 내역 조회, exit: 종료) : ")
         if debt_func == "1":
             add_debt()
         elif debt_func == "2":
@@ -289,6 +317,7 @@ def debt_management():
         else:
             print("올바른 기능을 입력해 주세요.")
 
+
 class JointAccount:    # 공동 계정 정보 관리 (계정 이름, 사용자 목록, 거래 내역, 잔액)
     def __init__(self, account_name):
         self.joint_account = account_name    # 공동 계정 이름
@@ -300,11 +329,13 @@ class JointAccount:    # 공동 계정 정보 관리 (계정 이름, 사용자 �
         self.joint_users.append(joint_user)
 
     def add_joint_income(self, amount, joint_desc=""):    # 수입 내역 추가 및 수입에 대한 설명
-        self.joint_tran.append({"type": "income", "amount": amount, "income_description": joint_desc})
+        self.joint_tran.append(
+            {"type": "income", "amount": amount, "income_description": joint_desc})
         self.joint_bal += amount
 
     def add_joint_expense(self, amount, joint_desc=""):    # 지출 내역 추가 및 지출에 대한 설명
-        self.joint_tran.append({"type": "expense", "amount": amount, "expense_description": joint_desc})
+        self.joint_tran.append(
+            {"type": "expense", "amount": amount, "expense_description": joint_desc})
         self.joint_bal -= amount
 
     def get_joint_bal(self):    # 현재 잔액 반환
@@ -312,6 +343,7 @@ class JointAccount:    # 공동 계정 정보 관리 (계정 이름, 사용자 �
 
     def get_joint_tran(self):    # 거래 내역 반환
         return self.joint_tran
+
 
 def export_account(account):
     """
@@ -329,6 +361,7 @@ def export_account(account):
         json.dump(account_data, file, ensure_ascii=False, indent=4)
     print(f"{filename} 파일로 가계부 데이터가 저장되었습니다.")
 
+
 def import_account():
     """
     JSON 파일로부터 가계부 데이터를 가져와 가계부 리스트에 추가하기.
@@ -337,12 +370,14 @@ def import_account():
     try:
         with open(filename, 'r', encoding='utf-8') as file:
             account_data = json.load(file)
-        new_account = Account_book(account_data['name'], account_data['balance'])
+        new_account = Account_book(
+            account_data['name'], account_data['balance'])
         new_account.history = account_data['history']
         Account_list.append(new_account)
         print(f"{account_data['name']} 가계부가 성공적으로 추가되었습니다.")
     except Exception as e:
         print(f"파일을 가져오는 중 오류가 발생했습니다: {e}")
+
 
 def day_spending(hist, spending, where="", year=datetime.now().year, month=datetime.now().month, day=datetime.now().day, hour=datetime.now().hour):
     """
@@ -359,6 +394,7 @@ def day_spending(hist, spending, where="", year=datetime.now().year, month=datet
         hist[f"{dt}"] = []      # 새 리스트 생성
     hist[f"{dt}"].append((-spending, where))
 
+
 def day_income(hist, income, where="", year=datetime.now().year, month=datetime.now().month, day=datetime.now().day, hour=datetime.now().hour):
     """
     일자와 시간을 지정하여 해당 일자의 수입을 dictionary에 리스트 및 튜플 형태로 기록.
@@ -374,6 +410,7 @@ def day_income(hist, income, where="", year=datetime.now().year, month=datetime.
         hist[f"{dt}"] = []      # 새 리스트 생성
     hist[f"{dt}"].append((income, where))
 
+
 """
 add_memo : 파일 입출력을 사용하여 메모장을 추가할 수 있는 기능으로 예상지출내역, 오늘의 목표등을 기록할 수 있다.
 @Parm
@@ -383,6 +420,8 @@ add_memo : 파일 입출력을 사용하여 메모장을 추가할 수 있는 �
 """
 
 memo_directory = []
+
+
 def add_memo():
     print("메모장 제목: ")
     str_title = input()
@@ -405,7 +444,7 @@ def add_memo():
             new_f.write(content)
             new_f.close()
             print("메모가 성공적으로 저장되었습니다.")
-            if directory not in memo_directory :
+            if directory not in memo_directory:
                 memo_directory.append(directory)
                 print("새로운 메모 디렉토리가 추가되었습니다.")
     except FileNotFoundError:
@@ -414,6 +453,7 @@ def add_memo():
         print(f"파일을 생성할 권한이 없습니다: '{str_title}'")
     except Exception as e:
         print(f"다른 오류가 발생했습니다: {e}")
+
 
 def list_memo():
     """
@@ -440,6 +480,7 @@ def list_memo():
     else:
         print("메모장이 존재하지 않습니다.")
 
+
 def read_memo():
     print("열고 싶은 메모장 제목: ")
     str_title = input()
@@ -451,6 +492,7 @@ def read_memo():
     except FileNotFoundError:
         print("해당 제목의 메모장을 찾을 수 없습니다.")
 
+
 def delete_memo():
     print("삭제할 메모장 제목: ")
     str_title = input()
@@ -460,10 +502,11 @@ def delete_memo():
     else:
         print("해당 제목의 메모장을 찾을 수 없습니다.")
 
+
 def memo():
     while True:
         print("-----------------------")
-        print("user:",user.name) # 현재 user가 누구인지 출력
+        print("user:", user.name)  # 현재 user가 누구인지 출력
         print("""
         1: 메모 추가
         2: 메모 리스트
@@ -486,9 +529,9 @@ def memo():
             print("잘못된 선택입니다.")
 
 
-
 def guide_link():
     webbrowser.open("https://help.3o3.co.kr/hc/ko/articles/15516331018521")
+
 
 def new_account(user_id, bal):
     """
@@ -497,12 +540,13 @@ def new_account(user_id, bal):
     user_id : 사용자 이름
     bal : 잔고
     """
-    household_ledger = {'user_id':user_id, 'bal':bal, 'history':{}}
+    household_ledger = {'user_id': user_id, 'bal': bal, 'history': {}}
 
     with open(f'{user_id}.txt', 'wb') as info:
         # pickle의 dump 기능을 이용하여 이용자의 이름으로 된 파일에
         # 이용자의 id, 잔고, 수입/지출 내역(해당 함수 내에서는 초기값 공백)을 저장
-        pickle.dump(household_ledger,info)
+        pickle.dump(household_ledger, info)
+
 
 def open_account_info(user_id):
     """
@@ -518,6 +562,7 @@ def open_account_info(user_id):
         print(f"{user_id_clean}의 정보를 불러오는 과정에서 오류가 발생하였습니다. : {e}")
         return None
 
+
 def filter_expenses_by_date(start_date, end_date):
     """
     특정 기간 동안의 지출 내역을 필터링하여 출력합니다.
@@ -527,6 +572,7 @@ def filter_expenses_by_date(start_date, end_date):
     for entry in ledger:
         if start_date <= entry['date'] <= end_date:
             print(entry)
+
 
 def calculator():
     try:
@@ -543,10 +589,13 @@ def calculator():
         # 계산 중 오류가 발생하면 예외를 처리하고 오류 메시지를 출력한다.
         print(f"오류 발생: {e}")
 
+
 # 가계부 데이터 저장 변수
 ledger = []
 
 # 도움말 출력 함수
+
+
 def print_help():
     print("""
     1: 수입/지출 항목 추가
@@ -558,10 +607,13 @@ def print_help():
     exit: 종료
     """)
 
+
 """
 가계부 데이터 및 사용자 데이터를 초기화하는 함수.
 가계부 데이터와 사용자 데이터를 빈 상태로 설정하고, 지출 내역 파일을 초기화한다.
 """
+
+
 def reset_data():
     global ledger, userdata
     # 가계부 데이터와 사용자 데이터를 초기화
@@ -575,19 +627,22 @@ def reset_data():
         os.remove('login.txt')
     print("모든 데이터가 초기화되었습니다.")
 
-def get_valid_amount_input(): 
+
+def get_valid_amount_input():
     """
     사용자로부터 유효한 금액을 입력받는 함수.
     입력이 올바르지 않을 경우, 사용자로부터 반복하여 입력을 받음.
     """
     while True:
-        amount = input("금액: ") # 사용자로부터 금액 입력 요청
-        if amount.isdigit(): # 입력이 숫자로만 이루어져 있는지 확인
-            return float(amount) # 숫자로만 이루어져 있다면 입력값을 float로 변환하여 반환
+        amount = input("금액: ")  # 사용자로부터 금액 입력 요청
+        if amount.isdigit():  # 입력이 숫자로만 이루어져 있는지 확인
+            return float(amount)  # 숫자로만 이루어져 있다면 입력값을 float로 변환하여 반환
         else:
-            print("숫자만 입력하세요.") # 입력이 숫자가 아닌 경우, 오류 메시지 출력
+            print("숫자만 입력하세요.")  # 입력이 숫자가 아닌 경우, 오류 메시지 출력
 
 # 수입/지출 항목 추가 함수
+
+
 def add_entry():
     date = input("날짜 (YYYY-MM-DD): ")
     category = input("카테고리: ")
@@ -606,9 +661,11 @@ def add_entry():
 
     category_count = sum(1 for e in ledger if e["category"] == category)
 
-    if category_count >= 3 and category not in favorites: #같은 카테고리가 3번 이상 입력되면 즐겨찾기에 추가할 것인지 알람창을 출력.
-        response = input(f"'{category}' 같은 카테고리가 3회 이상 입력되었습니다. 즐겨찾기에 추가하시겠습니까? ('y' or 'n'): ").strip().lower()
-        if response == 'y': #'y'입력시, 카테고리를 즐겨찾기 항목에 추가.
+    # 같은 카테고리가 3번 이상 입력되면 즐겨찾기에 추가할 것인지 알람창을 출력.
+    if category_count >= 3 and category not in favorites:
+        response = input(
+            f"'{category}' 같은 카테고리가 3회 이상 입력되었습니다. 즐겨찾기에 추가하시겠습니까? ('y' or 'n'): ").strip().lower()
+        if response == 'y':  # 'y'입력시, 카테고리를 즐겨찾기 항목에 추가.
             add_favorite_category(category)
         else:
             print("카테고리에 추가되지 않았습니다.")
@@ -616,12 +673,14 @@ def add_entry():
 
 favorites = []
 
-def add_favorite_category(category): #즐겨찾기 항목에 추가.
-    if category not in favorites:  #카테고리가 즐겨찾기에 존재하지 않는다면, 즐겨찾기 추가. 그렇지 않다면, 경고창 출력.
+
+def add_favorite_category(category):  # 즐겨찾기 항목에 추가.
+    if category not in favorites:  # 카테고리가 즐겨찾기에 존재하지 않는다면, 즐겨찾기 추가. 그렇지 않다면, 경고창 출력.
         favorites.append(category)
         print(f"'{category}' 카테고리가 즐겨찾기에 추가되었습니다.")
     else:
         print(f"'{category}' 카테고리는 이미 즐겨찾기에 있습니다.")
+
 
 def show_favorites():
     if not favorites:
@@ -632,6 +691,8 @@ def show_favorites():
             print(f"- {category}")
 
 # 항목 조회 함수
+
+
 def view_entries():
     for entry in ledger:
         print(entry)
@@ -641,7 +702,7 @@ def view_entries():
 
 def day_evaluation():
     # 사용자로부터 그날의 평가를 입력 받음
-    while True:     #잘못된 값 입력 시 다시 입력 받을 수 있도록 수정 
+    while True:  # 잘못된 값 입력 시 다시 입력 받을 수 있도록 수정
         evaluation = input("오늘의 평가를 입력하세요 (0에서 10까지): ")
         try:
             evaluation = float(evaluation)
@@ -653,6 +714,7 @@ def day_evaluation():
         except ValueError:
             print("올바른 숫자를 입력하세요.")
 
+
 def calculate_average_score(scores):
     if scores:
         total_score = sum(scores)
@@ -660,6 +722,7 @@ def calculate_average_score(scores):
         return average_score
     else:
         return None
+
 
 def recommend_financial_product(products):
     # 사용자에게 입력 받은 여러 금융 상품 정보를 비교하여 가장 유리한 상품을 추천
@@ -681,6 +744,7 @@ def recommend_financial_product(products):
 
     return best_product
 
+
 def get_products_from_user():
     products = []
     while True:
@@ -692,6 +756,7 @@ def get_products_from_user():
         if more_products.lower() != 'y':
             break
     return products
+
 
 def average():
     나이 = input("나이 입력: ")
@@ -709,14 +774,17 @@ def average():
         print("한달 평균 생활비는 148.9만원 입니다.")
     else:
         print("올바른 나이를 입력하십시오")
+
+
 """   
 나이를 입력받고 한국 1인 평균  생활비를 보여주는 기능    
-"""     
+"""
+
 
 def compare_financial_goal(user1, user2, goal):
     """
     두 사용자의 잔고를 비교하여 목표 금액에 대한 달성률을 계산하고 비교합니다.
-    
+
     @Param
         user1 : User object : 비교할 첫 번째 사용자 객체.
         user2 : User object : 비교할 두 번째 사용자 객체.
@@ -744,6 +812,8 @@ def compare_financial_goal(user1, user2, goal):
         print("두 사용자의 목표 달성률이 같습니다.")
 
 # 월별 보고서 생성 함수
+
+
 def generate_monthly_report():
     month = input("보고서 생성할 월 (YYYY-MM): ")
     monthly_total = 0
@@ -767,28 +837,35 @@ def generate_monthly_report():
     average_score = calculate_average_score(scores)
     if category_totals:
         max_category = max(category_totals, key=category_totals.get)
-        print(f"\n가장 지출이 많은 카테고리: {max_category} ({category_totals[max_category]} 원)")
+        print(
+            f"\n가장 지출이 많은 카테고리: {max_category} ({category_totals[max_category]} 원)")
     else:
         print("해당 월에는 지출 내역이 없습니다.")
-    
+
     if average_score is not None:
         print(f"{month}월 평균 점수: {average_score:.2f} 점")
     else:
         print(f"{month}월에는 평가된 점수가 없습니다.")
 
-budget = None #전역변수 budget의 기본값 설정
+
+budget = None  # 전역변수 budget의 기본값 설정
 
 # 예산 설정 및 초과 알림 함수
+
+
 def set_budget():
-    global budget 
-    budget = float(input("예산 설정 (원): ")) #budget을 전역변수로 변경
+    global budget
+    budget = float(input("예산 설정 (원): "))  # budget을 전역변수로 변경
     current_total = sum(float(entry["amount"]) for entry in ledger)
     if current_total > budget:
         print(f"경고: 예산 초과! 현재 지출: {current_total} 원")
     else:
-        print(f"예산 설정 완료. 현재 지출: {current_total} 원, 남은 예산: {budget - current_total} 원")
+        print(
+            f"예산 설정 완료. 현재 지출: {current_total} 원, 남은 예산: {budget - current_total} 원")
 
 # 예산 확인 함수
+
+
 def check_budget():
     global budget
     if budget is None:
@@ -798,6 +875,8 @@ def check_budget():
         print(f"설정된 예산은 {budget}원이고, 남은 예산은 {budget - current_total} 원입니다.")
 
 # 지출 카테고리 분석 함수
+
+
 def analyze_categories():
     category_totals = {}
     for entry in ledger:
@@ -809,11 +888,10 @@ def analyze_categories():
         print(f"{category}: {total} 원")
 
 
-
 def calculate_monthly_savings(target_amount, target_date):
     """
     목표 금액과 목표 날짜를 기준으로 매월 저축해야 할 금액과 남은 달 수를 계산합니다.
-    
+
     @Param
         target_amount : 목표 금액.
         target_date : 목표 날짜 (YYYY-MM-DD 형식).
@@ -826,7 +904,8 @@ def calculate_monthly_savings(target_amount, target_date):
     today = date.today()
     target_date = datetime.strptime(target_date, "%Y-%m-%d").date()
 
-    months_left = (target_date.year - today.year) * 12 + target_date.month - today.month
+    months_left = (target_date.year - today.year) * \
+        12 + target_date.month - today.month
 
     monthly_savings = target_amount / months_left
 
@@ -837,7 +916,7 @@ def calculate_monthly_savings(target_amount, target_date):
 def track_savings(savings, target_amount, months_left):
     """
     현재까지의 저축액, 목표 금액, 매월 저축해야 할 금액, 남은 달 수를 바탕으로 남은 금액과 수정된 월간 저축액을 계산합니다.
-    
+
     @Param
         savings : 현재까지 저축된 금액.
         target_amount : 목표 금액.
@@ -853,8 +932,10 @@ def track_savings(savings, target_amount, months_left):
     remaining_amount = target_amount - savings
     updated_monthly_savings = remaining_amount / months_left
 
-    print(f"남은 금액: {remaining_amount:.2f}원, 수정된 월간 저축액: {updated_monthly_savings:.2f}원")
+    print(
+        f"남은 금액: {remaining_amount:.2f}원, 수정된 월간 저축액: {updated_monthly_savings:.2f}원")
     return remaining_amount, updated_monthly_savings
+
 
 # 지출 내역을 저장할 파일 이름
 expenses_file = 'expenses.json'
@@ -863,6 +944,7 @@ expenses_file = 'expenses.json'
 if not os.path.exists(expenses_file):
     with open(expenses_file, 'w') as file:
         json.dump([], file)
+
 
 def save_expense(expense):
     # 파일을 열어 기존 데이터를 불러옴
@@ -875,6 +957,8 @@ def save_expense(expense):
         json.dump(data, file, ensure_ascii=False, indent=4)
 
 # 저장된 지출 내역을 조회하는 함수
+
+
 def view_expenses():
     # 파일을 열어 데이터를 불러옴
     with open(expenses_file, 'r', encoding='utf-8') as file:
@@ -882,12 +966,15 @@ def view_expenses():
         if data:
             # 데이터가 존재하면 각 지출 내역을 출력
             for idx, expense in enumerate(data, start=1):
-                print(f"{idx}. {expense['date']} - {expense['item']} : {expense['amount']}원")
+                print(
+                    f"{idx}. {expense['date']} - {expense['item']} : {expense['amount']}원")
         else:
             # 데이터가 비어 있으면 해당 메시지 출력
             print("저장된 지출 내역이 없습니다.")
 
 # 지출 내역을 입력받는 함수
+
+
 def input_expense():
     # 사용자로부터 지출 날짜, 항목, 금액을 입력받음
     date = input("지출 날짜 (예: 2024-05-30): ")
@@ -904,6 +991,8 @@ def input_expense():
     print("지출 내역이 저장되었습니다.")
 
 # 기능 3: 지출 내역 삭제
+
+
 def delete_expense():
     # 삭제할 지출 항목의 인덱스를 입력받음
     index = input("삭제할 지출 항목의 번호를 입력하세요: ")
@@ -924,16 +1013,20 @@ def delete_expense():
     except ValueError:
         print("숫자를 입력하세요.")
 
+
 monthly_goals = {}
+
 
 def set_monthly_goal(month, amount):
     """월별 목표 금액을 설정합니다."""
     monthly_goals[month] = amount
     print(f"{month}의 목표 금액이 {amount}원으로 설정되었습니다.")
 
+
 def get_monthly_goal(month):
     """월별 목표 금액을 반환합니다."""
     return monthly_goals.get(month, "해당 월에 대한 목표 금액이 설정되지 않았습니다.")
+
 
 def show_all_goals():
     """모든 월별 목표 금액을 출력합니다."""
@@ -945,6 +1038,8 @@ def show_all_goals():
 
 # 날짜 형식 검사 함수
 # 날짜가 달력상 날짜인지 확인
+
+
 def validate_date(date):
     try:
         datetime.strptime(date, '%Y-%m-%d')
@@ -954,6 +1049,8 @@ def validate_date(date):
         return False
 
 # 금액 형식 검사 함수 (소수점 포함)
+
+
 def validate_amount(amount):
     try:
         float(amount)
@@ -961,6 +1058,7 @@ def validate_amount(amount):
     except ValueError:
         print("금액은 숫자 또는 소수점으로 입력하세요.")
         return False
+
 
 def sort_entries_by_date():
     """
@@ -974,6 +1072,7 @@ def sort_entries_by_date():
     print("지출 내역 (날짜순):")
     for entry in sorted_entries:
         print(entry)
+
 
 def sort_entries_by_amount():
     """
@@ -999,14 +1098,15 @@ def modify_expense():
     # 저장된 지출 내역을 출력하여 사용자가 선택할 수 있도록 함
     print("저장된 지출 내역:")
     for idx, expense in enumerate(ledger, start=1):
-        print(f"{idx}. 날짜: {expense['date']}, 카테고리: {expense['category']}, 설명: {expense['description']}, 금액: {expense['amount']}원")
+        print(
+            f"{idx}. 날짜: {expense['date']}, 카테고리: {expense['category']}, 설명: {expense['description']}, 금액: {expense['amount']}원")
 
     # 사용자로부터 수정할 지출 항목의 번호를 입력받음
     index = input("수정할 지출 항목의 번호를 입력하세요: ")
 
     try:
         index = int(index)
-        #사용자에게 입력 받은 수정할 지출 항목의 내역을 출력한다
+        # 사용자에게 입력 받은 수정할 지출 항목의 내역을 출력한다
         if 1 <= index <= len(ledger):
             expense = ledger[index - 1]
             print(f"수정하고자 하는 지출 내역: {expense}")
@@ -1041,11 +1141,13 @@ def modify_expense():
     except ValueError:
         print("숫자를 입력하세요.")
 
+
 # 엔화와 달러의 환율 정보를 정적으로 저장합니다.
 exchange_rate = {
     "USD": 0.0009,  # 1달러 = 1100원 (가상의 환율)
     "JPY": 0.1      # 1엔화 = 10원 (가상의 환율)
 }
+
 
 def convert_currency(amount, currency):
     """
@@ -1062,6 +1164,8 @@ def convert_currency(amount, currency):
         return None
 
 # 환율 계산을 실행하는 부분
+
+
 def calculate_exchange():
     amount = float(input("환전할 금액(원): "))
     currency = input("환전할 통화를 입력하세요 (USD 또는 JPY): ")
@@ -1072,6 +1176,8 @@ def calculate_exchange():
         print("지원되지 않는 통화입니다.")
 
 # 가계부 기능에 환율 계산 추가
+
+
 def add_entry_with_exchange():
     # 기존의 지출 항목 추가 함수(add_entry())와 비슷하게 작성하되,
     # 추가로 환전할 통화와 금액을 입력받고, 해당 통화로 환전된 금액을 함께 저장합니다.
@@ -1096,13 +1202,14 @@ def add_entry_with_exchange():
     else:
         print("지원되지 않는 통화입니다.")
 
+
 def load_expenses():
     """
     지출 내역을 expenses.json 파일에서 불러오는 함수
     db처럼 지출 정보를 파일에 저장하는 input_expense() 함수를 활용
     """
-    try: 
-        #expenses.json파일 오픈
+    try:
+        # expenses.json파일 오픈
         with open('expenses.json', 'r', encoding='utf-8') as file:
             data = json.load(file)
         return data
@@ -1112,12 +1219,13 @@ def load_expenses():
         print(f"An error occurred while loading expenses: {e}")
         return []
 
+
 def analyze_and_advise():
     """
     지출 내역을 분석하여 지출을 줄일 수 있는 조언을 제공하는 함수
     """
     expenses = load_expenses()  # 지출 내역을 expenses.json에서 불러옴
-    if not expenses: # 저장된 지출이 없음
+    if not expenses:  # 저장된 지출이 없음
         print("지출 없음")
         return
 
@@ -1135,26 +1243,31 @@ def analyze_and_advise():
     advice = []  # 조언을 저장할 리스트
     for category, total in category_totals.items():
         percentage = (total / total_expense) * 100  # 카테고리별 지출 비율 계산
-        #비율에 따라 조언 다르게 생성
+        # 비율에 따라 조언 다르게 생성
         if percentage > 30:
-            advice.append(f"{category}에서 지출이 총 지출의 {percentage:.2f}%를 차지합니다. {category}에서 절약할 수 있는 방법을 찾아보세요.")
+            advice.append(
+                f"{category}에서 지출이 총 지출의 {percentage:.2f}%를 차지합니다. {category}에서 절약할 수 있는 방법을 찾아보세요.")
         elif percentage > 20:
-            advice.append(f"{category}에서 지출이 총 지출의 {percentage:.2f}%를 차지합니다. 조금 더 신경 써서 지출을 줄여보세요.")
+            advice.append(
+                f"{category}에서 지출이 총 지출의 {percentage:.2f}%를 차지합니다. 조금 더 신경 써서 지출을 줄여보세요.")
 
     if advice:
-        #조언 출력
+        # 조언 출력
         print("지출을 줄일 수 있는 조언:")
         for a in advice:
             print(a)
     else:
-        print("지출이 잘 관리되고 있습니다!") #조언이 없을 때
+        print("지출이 잘 관리되고 있습니다!")  # 조언이 없을 때
 
-#디데이 기능
-d_day_file = 'd_day.json' 
+
+# 디데이 기능
+d_day_file = 'd_day.json'
+
 
 def save_d_day(target_date_str):
     with open(d_day_file, 'w') as file:
         json.dump({"target_date": target_date_str}, file)
+
 
 def load_d_day():
     if os.path.exists(d_day_file):
@@ -1162,6 +1275,7 @@ def load_d_day():
             data = json.load(file)
         return data.get("target_date", None)
     return None
+
 
 def add_d_day():
     try:
@@ -1177,6 +1291,7 @@ def add_d_day():
     except ValueError:
         print("올바른 날짜 형식을 입력하세요 (YYYY-MM-DD).")
 
+
 def view_d_day():
     target_date_str = load_d_day()
     if target_date_str:
@@ -1190,40 +1305,48 @@ def view_d_day():
     else:
         print("저장된 디데이 정보가 없습니다.")
 
-#가계부 초깃값 임의로 설정
-#Account_book.py의 Account book 모듈을 불러오므로 Account.
-a = Account_book.Account_book("가계부 1",1000000)
-b = Account_book.Account_book("가계부 2",2000000)
-c = Account_book.Account_book("가계부 3",3000000)
 
-Account_list = [a,b,c] #가계부 리스트
-i=0
+# 가계부 초깃값 임의로 설정
+# Account_book.py의 Account book 모듈을 불러오므로 Account.
+a = Account_book.Account_book("가계부 1", 1000000)
+b = Account_book.Account_book("가계부 2", 2000000)
+c = Account_book.Account_book("가계부 3", 3000000)
 
-def choose_Account(func):#가계부 선택 함수
+Account_list = [a, b, c]  # 가계부 리스트
+i = 0
+
+
+def choose_Account(func):  # 가계부 선택 함수
     print("가계부 선택(번호로 입력)")
-    for i in range(0,len(Account_list)):#가계부 리스트 출력
-      print(f"가계부 {i+1}번 : ",Account_list[i].name)
+    for i in range(0, len(Account_list)):  # 가계부 리스트 출력
+        print(f"가계부 {i+1}번 : ", Account_list[i].name)
     choose = input()
     return choose
 
-def init_Account_book(num): #가계부 하나의 모든기록 초기화(기존의 이름과 새로 입력받은 잔액으로 초기화), choose_Account와 연동 - 2
-    if(num < 0):#오류 검출
-      print("잘못 입력하셨습니다.(0이하수 입력)")
+
+# 가계부 하나의 모든기록 초기화(기존의 이름과 새로 입력받은 잔액으로 초기화), choose_Account와 연동 - 2
+def init_Account_book(num):
+    if (num < 0):  # 오류 검출
+        print("잘못 입력하셨습니다.(0이하수 입력)")
     else:
-      bal = input("남기고 싶은 잔액을 입력하세요. (x 입력시 현재잔액을 입력)") #주의 - 잔액 설정시 char형으로 저장 -> int형으로 변환해야 함
-      if(bal == "x"):
-        print("잔액을 그대로 가져옵니다.")
-        bal = Account_list[num-1].bal
-      else:
-        if(bal.isnumeric()): #숫자를 표현하는지 확인
-          bal = int(bal) 
+        # 주의 - 잔액 설정시 char형으로 저장 -> int형으로 변환해야 함
+        bal = input("남기고 싶은 잔액을 입력하세요. (x 입력시 현재잔액을 입력)")
+        if (bal == "x"):
+            print("잔액을 그대로 가져옵니다.")
+            bal = Account_list[num-1].bal
         else:
-          print("잘못 입력하셨습니다.(잔액 이상)")
-          return 0
-      print(f"가계부 {num}번을 초기화 합니다.")
-      name = Account_list[num-1].name #원래 저장소에서 이름 가져오기(배열은 0~n-1로 이루어짐)
-      Account_list[num-1] = Account_book(name,bal) #새로운 객체 생성 -> 기존 리스트에서 교체
-      print(f"가계부 {num}번이 이름: {Account_list[num-1].name}과 잔액: {Account_list[num-1].bal}으로 초기화 되었습니다.")
+            if (bal.isnumeric()):  # 숫자를 표현하는지 확인
+                bal = int(bal)
+            else:
+                print("잘못 입력하셨습니다.(잔액 이상)")
+                return 0
+        print(f"가계부 {num}번을 초기화 합니다.")
+        name = Account_list[num-1].name  # 원래 저장소에서 이름 가져오기(배열은 0~n-1로 이루어짐)
+        # 새로운 객체 생성 -> 기존 리스트에서 교체
+        Account_list[num-1] = Account_book(name, bal)
+        print(
+            f"가계부 {num}번이 이름: {Account_list[num-1].name}과 잔액: {Account_list[num-1].bal}으로 초기화 되었습니다.")
+
 
 """
 YU_Account : 프로그램 시작 화면 출력
@@ -1232,6 +1355,8 @@ YU_Account : 프로그램 시작 화면 출력
 @return
     None
 """
+
+
 def YU_Account():
     welcome_message = """=======================================
 *                                     *
@@ -1243,7 +1368,8 @@ def YU_Account():
     """
     print(welcome_message)
 
-def print_Login_help(): #user interface 도움말
+
+def print_Login_help():  # user interface 도움말
     print("""
     1: 회원가입
     2: 로그인
@@ -1255,33 +1381,36 @@ def print_Login_help(): #user interface 도움말
     ?: 로그인 도움말 출력
     """)
 
-def read_user_information(): #login.txt에서 읽어온 후 dic에 저장
-    #파일 읽어 오기
-    f = open("login.txt",'r',encoding='UTF-8')
 
-    login_info = []#파일 정보 저장
-    #한줄씩 읽어 온 후 리스트에 저장
+def read_user_information():  # login.txt에서 읽어온 후 dic에 저장
+    # 파일 읽어 오기
+    f = open("login.txt", 'r', encoding='UTF-8')
+
+    login_info = []  # 파일 정보 저장
+    # 한줄씩 읽어 온 후 리스트에 저장
     while True:
         line = f.readline()
         if line == '':
             break
-        line = line.replace(' ','')#필요없는 값 삭제
-        line = line.replace('\n','')
+        line = line.replace(' ', '')  # 필요없는 값 삭제
+        line = line.replace('\n', '')
         line = line.split(':')
-        #파일에서 딕셔너리로 복구 시켜주는 코드(userdata2, usernames, userphones를 복구시킴)
+        # 파일에서 딕셔너리로 복구 시켜주는 코드(userdata2, usernames, userphones를 복구시킴)
         login_info.append(line)
-        userdata2[line[0]] = {'pw': line[1], 'name': line[2], 'phone': line[3]} 
+        userdata2[line[0]] = {'pw': line[1], 'name': line[2], 'phone': line[3]}
         usernames[line[2]] = line[0]
-        userphones[line[3]] = line[0] 
+        userphones[line[3]] = line[0]
     f.close()
-    return login_info #파일의 모든 정보가 저장된 리스트 반환 - 이후 로그인 인터페이스에서 사용을 위함
+    return login_info  # 파일의 모든 정보가 저장된 리스트 반환 - 이후 로그인 인터페이스에서 사용을 위함
 
-def Login_interface(): #로그인 인터페이스
-    login_info = read_user_information() #주의 - read_user_information()이 항상 위에 있어야함(인터프리터 방식)
-    if len(login_info)==0 : 
+
+def Login_interface():  # 로그인 인터페이스
+    # 주의 - read_user_information()이 항상 위에 있어야함(인터프리터 방식)
+    login_info = read_user_information()
+    if len(login_info) == 0:
         print("로그인 정보가 없습니다.\n회원가입을 진행해주세요.")
         return 0
-    elif login_info is None : 
+    elif login_info is None:
         print("오류가 발생했습니다.")
         return 0
     print("로그인(ID와 PW를 입력해 주세요.)")
@@ -1300,29 +1429,31 @@ def Login_interface(): #로그인 인터페이스
     except Exception as e:
         print(f"로그인 정보를 읽는 도중 오류가 발생했습니다: {e}")
         return 0
-    
+
     cnt = 0
 
-    login_info = read_user_information() #주의 - read_user_information()이 항상 위에 있어야함(인터프리터 방식)
+    # 주의 - read_user_information()이 항상 위에 있어야함(인터프리터 방식)
+    login_info = read_user_information()
 
     for i in range(len(login_info)):
-        if(login_info[i][0] == ID):
-            h.update(PW.encode()) #문자열로 비밀번호 추가 가능
-            login_pw = h.hexdigest()#암호화 후 출력
+        if (login_info[i][0] == ID):
+            h.update(PW.encode())  # 문자열로 비밀번호 추가 가능
+            login_pw = h.hexdigest()  # 암호화 후 출력
 
-            if(login_info[i][1] == login_pw): #ID가 맞으면 PW 확인
-                print(f"환영합니다. {login_info[i][2]} 고객님")#맞으면 이름 출력
-                return User(login_info[i][2]) #user 객체 반환 - 이후 user정보에 입력 위함
+            if (login_info[i][1] == login_pw):  # ID가 맞으면 PW 확인
+                print(f"환영합니다. {login_info[i][2]} 고객님")  # 맞으면 이름 출력
+                return User(login_info[i][2])  # user 객체 반환 - 이후 user정보에 입력 위함
             else:
-                print("비밀번호 오류입니다.")#아니면 끝
+                print("비밀번호 오류입니다.")  # 아니면 끝
                 break
         cnt += 1
 
-    if(cnt == len(login_info)): # cnt로 리스트의 끝인지 check
+    if (cnt == len(login_info)):  # cnt로 리스트의 끝인지 check
         print("존재하지 않는 아이디입니다.")
     return 0
 
-def change_pw_by_phone(): #ID와 전화번호 또는 ID와 이름으로 pw변경 - find_id_by_phone()에서 이름 또한 포함되도록 변경
+
+def change_pw_by_phone():  # ID와 전화번호 또는 ID와 이름으로 pw변경 - find_id_by_phone()에서 이름 또한 포함되도록 변경
     check = 0
 
     ID = input("찾고자 하는 사용자의 ID 입력: ")  # 사용자가 찾고자 하는 ID를 입력받음
@@ -1332,28 +1463,32 @@ def change_pw_by_phone(): #ID와 전화번호 또는 ID와 이름으로 pw변경
         phone = input("전화번호 입력: ")
 
         if phone in userphones:
-            while(True):#비밀번호를 바꿀때 까지 무한루프
+            while (True):  # 비밀번호를 바꿀때 까지 무한루프
                 P = input("사용하고자 하는 비밀번호를 입력해 주십시오: ")
-                check = input(f"사용하고자 하는 비밀번호가 {P}가 맞나요?(맞으면 1, 아니면 아무거나 입력): ")
+                check = input(
+                    f"사용하고자 하는 비밀번호가 {P}가 맞나요?(맞으면 1, 아니면 아무거나 입력): ")
 
-                if(check == "1"): #주의 - check는 input으로 받으므로 char 형임
-                    h = hashlib.sha256() #암호 복호화
+                if (check == "1"):  # 주의 - check는 input으로 받으므로 char 형임
+                    h = hashlib.sha256()  # 암호 복호화
                     h.update(P.encode())
                     P = h.hexdigest()
 
-                    userdata2[ID]['pw'] = P#dic 수정
+                    userdata2[ID]['pw'] = P  # dic 수정
 
                     with open('login.txt', 'w', encoding='UTF-8') as fw:  # utf-8 변환 후 login.txt에 작성
                         for user_id, user_info in userdata2.items():
-                            fw.write(f'{user_id} : {user_info["pw"]} : {user_info["name"]} : {user_info["phone"]}\n')  # 아이디, 비밀번호, 이름, 전화번호 값을 차례로 login.txt파일에 저장
+                            # 아이디, 비밀번호, 이름, 전화번호 값을 차례로 login.txt파일에 저장
+                            fw.write(
+                                f'{user_id} : {user_info["pw"]} : {user_info["name"]} : {user_info["phone"]}\n')
                     break
 
         else:
-            print("해당 전화번호를 가진 사용자가 없습니다. 다시 입력해 주십시오") #전화번호 존재 X
+            print("해당 전화번호를 가진 사용자가 없습니다. 다시 입력해 주십시오")  # 전화번호 존재 X
     else:
-        print("ID가 존재하지 않습니다.") #ID 존재 X
+        print("ID가 존재하지 않습니다.")  # ID 존재 X
 
-YU_Account() #프로그램 시작 화면
+
+YU_Account()  # 프로그램 시작 화면
 
 version = "1.0.0"  # 프로그램 버전
 print(f"프로그램 버전: {version}")
@@ -1363,6 +1498,8 @@ print(f"프로그램 버전: {version}")
 # 문자열을 datetime 객체로 변환합니다.
 # 올바른 날짜 형식이면 변환된 datetime 객체를 반환합니다.
 # 날짜 형식이 잘못된 경우 안내 메시지를 출력하고 다시 입력을 요청합니다.
+
+
 def input_date(prompt):
     while True:
         date_str = input(prompt)
@@ -1372,12 +1509,15 @@ def input_date(prompt):
         except ValueError:
             print("올바른 날짜 형식이 아닙니다. YYYY-MM-DD 형식으로 입력하세요.")
 
+
 # 재정 목표를 나타내는 클래스입니다.
 """
         재정 목표 객체를 초기화합니다.
         Args:
             목표의 이름, 목표의 금액, 목표의 달성 기한을 설정하고, 현재까지의 저축금액을 0으로 초기화
 """
+
+
 class FinancialGoal:
     def __init__(self, name, target_amount, due_date):
         self.name = name
@@ -1399,7 +1539,8 @@ class FinancialGoal:
         remaining_amount = self.target_amount - self.saved_amount
         days_left = (self.due_date - datetime.now()).days
         if remaining_amount <= 0:
-            print(f"축하합니다! '{self.name}' 목표를 달성했습니다! \n 목표 금액: {self.target_amount}원\n현재 저축액: {self.saved_amount}원\n")
+            print(
+                f"축하합니다! '{self.name}' 목표를 달성했습니다! \n 목표 금액: {self.target_amount}원\n현재 저축액: {self.saved_amount}원\n")
         else:
             print(f"목표: {self.name}\n목표 금액: {self.target_amount}원\n현재 저축액: {self.saved_amount}원\n남은 금액: {remaining_amount}원\n남은 기간: {days_left}일")
 
@@ -1411,9 +1552,9 @@ class User:
         self.name = name
         self.goals = []
 
-
     # 목표 리스트에서 특정 인덱스의 목표를 가져오는 메서드입니다.
-    #해당 인덱스의 목표 객체를 반환하거나, 인덱스가 올바르지 않을 경우 None을 반환합니다.
+    # 해당 인덱스의 목표 객체를 반환하거나, 인덱스가 올바르지 않을 경우 None을 반환합니다.
+
     def get_goal(self, index):
         if 0 <= index < len(self.goals):
             return self.goals[index]
@@ -1421,6 +1562,8 @@ class User:
             return None
 
 # 재정 목표를 관리하는 루프 함수입니다.
+
+
 def financial_goal_loop(user):
     while True:
         print("\n--- 재정 목표 관리 ---")
@@ -1432,7 +1575,7 @@ def financial_goal_loop(user):
 
         # 사용자로부터 기능 선택을 입력받습니다.
         choice = input("기능을 선택하세요: ")
-          # 새로운 목표를 추가하는 기능입니다.
+        # 새로운 목표를 추가하는 기능입니다.
         if choice == "1":
             name = input("목표 이름을 입력하세요: ")
             target_amount = int(input("목표 금액을 입력하세요: "))
@@ -1462,9 +1605,9 @@ def financial_goal_loop(user):
                     selected_goal.add_savings(amount)
                 else:
                     print("올바른 목표를 선택하세요.")
-        #목표 목록을 출력하고, 사용자에게 특정한 목표를 입력받아 해당 목표의 진행 상황을 확인하는 기능입니다.
-        #목표한 금액을 모두 모았다면 목표했던 금액과 현재 저축액을 출력합니다.
-        #목표 목록에 없는 번호 입력시 사용자에게 다시 입력 받습니다.
+        # 목표 목록을 출력하고, 사용자에게 특정한 목표를 입력받아 해당 목표의 진행 상황을 확인하는 기능입니다.
+        # 목표한 금액을 모두 모았다면 목표했던 금액과 현재 저축액을 출력합니다.
+        # 목표 목록에 없는 번호 입력시 사용자에게 다시 입력 받습니다.
         elif choice == "4":
             if not user.goals:
                 print("등록된 목표가 없습니다. 먼저 목표를 추가하세요.")
@@ -1478,38 +1621,34 @@ def financial_goal_loop(user):
                     selected_goal.check_progress()
                 else:
                     print("올바른 목표를 선택하세요.")
-        #메인 메뉴로 돌아가는 기능입니다.
+        # 메인 메뉴로 돌아가는 기능입니다.
         elif choice == "0":
             print("메인 메뉴로 돌아갑니다.")
             break
-        #재정 목표 관리 반복문에 없는 번호 입력시 사용자에게 다시 입력 받습니다.
+        # 재정 목표 관리 반복문에 없는 번호 입력시 사용자에게 다시 입력 받습니다.
         else:
             print("올바른 기능을 선택하세요.")
 
 
-
-
-
 ###########################################################
-
 # 프로그램 종료 여부를 판단하는 변수
 b_is_exit = 0
-interface = 0 #인터페이스 만들기
-user = 0 #user 이름 저장 변수
+interface = 0  # 인터페이스 만들기
+user = 0  # user 이름 저장 변수
 
-while user == 0: #유저 입력할때 까지 무한루프 도는 인터페이스 구현(탈출을 원할 시 0)
+while user == 0:  # 유저 입력할때 까지 무한루프 도는 인터페이스 구현(탈출을 원할 시 0)
     interface = input("로그인 기능 입력 (? 입력시 도움말) : ")
 
     if interface == "1":
-        user_reg_include_name_phone() #회원가입 함수 - 이미 존재
+        user_reg_include_name_phone()  # 회원가입 함수 - 이미 존재
     elif interface == "2":
-        user = Login_interface()#유저 상태를 user 변수에 저장 - 이후 기능 사용시 user에 해당하는 자료에서 산출
+        user = Login_interface()  # 유저 상태를 user 변수에 저장 - 이후 기능 사용시 user에 해당하는 자료에서 산출
     elif interface == "3":
-        find_id_by_phone() #id 찾기 - 이미 존재
-    elif interface == "4": 
-        change_pw_by_phone() #pw 찾기 - id 찾기 함수 변형
+        find_id_by_phone()  # id 찾기 - 이미 존재
+    elif interface == "4":
+        change_pw_by_phone()  # pw 찾기 - id 찾기 함수 변형
     elif interface == "?":
-        print_Login_help() #?입력시 Login 도움말 띄우기
+        print_Login_help()  # ?입력시 Login 도움말 띄우기
     else:
         print("프로그램을 종료합니다.")
         user = interface
@@ -1519,7 +1658,7 @@ while user == 0: #유저 입력할때 까지 무한루프 도는 인터페이스
 # 메인 루프
 while not b_is_exit:
     print("-----------------------")
-    print("user:",user.name) # 현재 user가 누구인지 출력
+    print("user:", user.name)  # 현재 user가 누구인지 출력
     func = input("기능 입력 (? 입력시 도움말) : ")
 
     if func == "1":
@@ -1534,12 +1673,67 @@ while not b_is_exit:
         analyze_categories()
     elif func == "?":
         print_help()
-    elif func == "exit" or func == "x" or func =="종료":
+    elif func == "exit" or func == "x" or func == "종료":
         print("프로그램을 종료합니다.")
         b_is_exit = True
     elif func == "memo":
         add_memo()
         memo()
     else:
-        
+
         print("올바른 기능을 입력해 주세요.")
+
+        # 인터페이스 생성
+window = Tk()
+window.title("OSS_ACCOUNT_2024-1")
+window.geometry("450x300")
+
+# 인터페이스의 프레임변경을 위한 함수
+
+
+def convert_frm(frame):
+    frame.tkraise()
+
+
+# 각 프레임의 크기를 window의 크기와 동일하게 하여 화면전환시 크기변화로 인한 형태유지
+frame1 = Frame(window, width=450, height=300)
+frame2 = Frame(window, width=450, height=300)
+frame3 = Frame(window, width=450, height=300)
+frame4 = Frame(window, width=450, height=300)
+frame5 = Frame(window, width=450, height=300)
+frame6 = Frame(window, width=450, height=300)
+
+# 각 프레임의 위치를 기준점을 0x0으로 함
+frame1.grid(row=0, column=0, sticky="nsew")
+frame2.grid(row=0, column=0, sticky="nsew")
+frame3.grid(row=0, column=0, sticky="nsew")
+frame4.grid(row=0, column=0, sticky="nsew")
+frame5.grid(row=0, column=0, sticky="nsew")
+frame6.grid(row=0, column=0, sticky="nsew")
+
+lb_login_1 = Label(frame1, text="+++++YU_ACCOUNT_BOOK+++++")
+lb_login_1.place(x=100, y=20, width=250, height=20)
+
+lb_login_2 = Label(frame1, text="-이 프로그램은 사용자가 재정을 효과적으로 관리 할 수 있도록 도와줍니다-")
+lb_login_2.place(x=30, y=50, width=390, height=20)
+#
+bt_fr1 = Button(frame1, text="1.회원가입", padx=55, pady=5,
+                command=lambda: [convert_frm(frame2)])
+bt_fr1.place(x=120, y=90)
+
+bt_fr2 = Button(frame1, text="2.로그인", padx=60, pady=5,
+                command=lambda: [convert_frm(frame3)])
+bt_fr2.place(x=118, y=140)
+
+bt_fr3 = Button(frame1, text="3.아이디 찾기", padx=48, pady=5,
+                command=lambda: [convert_frm(frame4)])
+bt_fr3.place(x=118, y=190)
+
+bt_fr4 = Button(frame1, text="4.비밀번호 찾기", padx=45, pady=5,
+                command=lambda: [convert_frm(frame5)])
+bt_fr4.place(x=116, y=240)
+
+# frame의 시작점을 frame1으로 설정
+convert_frm(frame1)
+
+window.mainloop()
